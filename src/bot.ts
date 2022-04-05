@@ -1,9 +1,9 @@
-import { CommandInteraction, Interaction } from "discord.js";
-import config from "./config";
-import CustomClient from "./models/CustomClient";
-import SlashCommand from "./models/SlashCommand";
 import { readdirSync } from "fs";
 import path from "path";
+import config from "./config";
+import CustomClient from "./models/CustomClient";
+import EventListener from "./models/EventListener";
+import SlashCommand from "./models/SlashCommand";
 
 export const client = new CustomClient({
 	intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES"],
@@ -22,29 +22,17 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
-client.once("ready", () => {
-	console.log(`Logged in as ${client.user?.tag} (${new Date()})`);
-});
+const eventFiles = relativeReadDir("./events").filter(
+	(file) => file.endsWith(".js") && file !== "index.js"
+);
 
-client.on("interactionCreate", async (interaction: Interaction) => {
-	if (!interaction.isCommand) return;
-
-	const cmdInteraction = interaction as CommandInteraction;
-	const command = client.commands.get(
-		cmdInteraction.commandName
-	) as SlashCommand;
-
-	if (!command) return;
-
-	try {
-		await command.callback(cmdInteraction);
-	} catch (error) {
-		console.error(error);
-		await cmdInteraction.reply({
-			content: "There was an error while executing this command!",
-			ephemeral: true,
-		});
+for (const file of eventFiles) {
+	const event = require(`./events/${file}`).default as EventListener;
+	if (event.once) {
+		client.once(event.name, (...args) => event.callback(...args));
+	} else {
+		client.on(event.name, (...args) => event.callback(...args));
 	}
-});
+}
 
 client.login(config.DISCORD_TOKEN);
