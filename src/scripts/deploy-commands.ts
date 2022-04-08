@@ -7,13 +7,15 @@ import SlashCommand from "../models/SlashCommand";
 
 const rest = new REST({ version: "9" }).setToken(config.DISCORD_TOKEN);
 
-const relativeReadDir = (dir: string) =>
-	fs.readdirSync(path.resolve(__dirname, dir)).filter(
+const relativeReadDir = (dir: string): string[] => {
+	dir = path.resolve(__dirname, dir);
+	return fs.readdirSync(dir).filter(
 		(filename) =>
 			filename.endsWith(".js") &&
 			filename !== "index.js" &&
 			fs.readFileSync(`${dir}/${filename}`).length !== 0 // file isn't empty
 	);
+};
 
 const commands = [];
 const commandFiles = relativeReadDir("../commands");
