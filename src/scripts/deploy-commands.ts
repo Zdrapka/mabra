@@ -1,6 +1,6 @@
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
-import { readdirSync } from "fs";
+import fs from "fs";
 import path from "path";
 import config from "../config";
 import SlashCommand from "../models/SlashCommand";
@@ -8,8 +8,11 @@ import SlashCommand from "../models/SlashCommand";
 const rest = new REST({ version: "9" }).setToken(config.DISCORD_TOKEN);
 
 const relativeReadDir = (dir: string) =>
-	readdirSync(path.resolve(__dirname, dir)).filter(
-		(file) => file.endsWith(".js") && file !== "index.js"
+	fs.readdirSync(path.resolve(__dirname, dir)).filter(
+		(filename) =>
+			filename.endsWith(".js") &&
+			filename !== "index.js" &&
+			fs.readFileSync(`${dir}/${filename}`).length !== 0 // file isn't empty
 	);
 
 const commands = [];
