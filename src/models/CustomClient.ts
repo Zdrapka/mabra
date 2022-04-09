@@ -6,6 +6,7 @@ export default class CustomClient extends Client {
 		super(options);
 	}
 
-	// TODO add a custom interface/class for slash commands
+	/* A Collection that maps a *button ID* to a  *slash command name* */
+	public buttons: Collection<string, string> = new Collection();
 	public commands: Collection<string, SlashCommand> = new Collection();
 }

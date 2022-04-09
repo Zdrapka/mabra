@@ -1,12 +1,14 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
+import CustomClient from "../models/CustomClient";
 import SlashCommand from "../models/SlashCommand";
 
-const Ping: SlashCommand = {
+const ping: SlashCommand = {
 	data: new SlashCommandBuilder().setName("ping").setDescription("Pong!"),
 	async callback(interaction: CommandInteraction): Promise<void> {
-		await interaction.reply("Pong!");
+		const client = interaction.client as CustomClient;
+		await interaction.reply(`Pong! ${client.ws.ping}ms`);
 	},
 };
 
-export default Ping;
+export default ping;
