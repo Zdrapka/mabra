@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import config from "./config";
 import ButtonSlashCommand from "./models/ButtonSlashCommand";
 import CustomClient from "./models/CustomClient";
 import { EventListener } from "./models/EventListener";

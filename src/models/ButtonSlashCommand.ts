@@ -5,9 +5,18 @@ import {
 	MessageButton,
 } from "discord.js";
 
-export default interface ButtonSlashCommand {
-	data: SlashCommandBuilder;
-	buttons: MessageButton[];
-	callback(interaction: CommandInteraction): Promise<void>;
-	buttonCallback(btnInteraction: ButtonInteraction): Promise<void>;
-}
+type ButtonSlashCommand =
+	| {
+			data: SlashCommandBuilder;
+			buttons: MessageButton[];
+			callback(interaction: CommandInteraction): Promise<void>;
+			buttonCallback(bInteraction: ButtonInteraction): Promise<void>;
+	  }
+	| {
+			data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
+			buttons: MessageButton[];
+			callback(interaction: CommandInteraction): Promise<void>;
+			buttonCallback(bInteraction: ButtonInteraction): Promise<void>;
+	  };
+
+export default ButtonSlashCommand;
