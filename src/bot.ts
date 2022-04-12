@@ -3,7 +3,7 @@ import path from "path";
 import config from "./config";
 import ButtonSlashCommand from "./models/ButtonSlashCommand";
 import CustomClient from "./models/CustomClient";
-import EventListener from "./models/EventListener";
+import { EventListener } from "./models/EventListener";
 import SlashCommand from "./models/SlashCommand";
 
 export const client = new CustomClient({

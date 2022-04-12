@@ -19,6 +19,13 @@ const level: SlashCommand = {
 			(interaction.options.getMember("member") as GuildMember) ||
 			(interaction.member as GuildMember);
 
+		if (member.user.bot) {
+			return await interaction.reply({
+				content: "Bots don't have levels!",
+				ephemeral: true,
+			});
+		}
+
 		const { level, messageCount } = await findOrCreateMember(prisma, member);
 
 		const emb = new MessageEmbed()

@@ -1,7 +1,7 @@
 import { ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
 import ButtonSlashCommand from "../models/ButtonSlashCommand";
 import CustomClient from "../models/CustomClient";
-import EventListener from "../models/EventListener";
+import { EventListener } from "../models/EventListener";
 import SlashCommand from "../models/SlashCommand";
 
 const interactionCreate: EventListener = {

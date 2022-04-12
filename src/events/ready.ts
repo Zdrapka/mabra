@@ -1,4 +1,4 @@
-import EventListener from "../models/EventListener";
+import { EventListener } from "../models/EventListener";
 import CustomClient from "../models/CustomClient";
 import { findOrCreateGuild } from "../db/findOrCreate";
 

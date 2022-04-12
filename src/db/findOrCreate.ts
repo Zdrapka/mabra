@@ -33,6 +33,9 @@ export const findOrCreateMember = async (
 	prisma: PrismaClient,
 	member: GuildMember
 ) => {
+	// Make sure a user exists, to keep database integrity
+	await findOrCreateUser(prisma, member.user);
+
 	const { guild, id: userId } = member;
 	const queriedMember = prisma.member.upsert({
 		where: { guildId_userId: { guildId: guild.id, userId } },

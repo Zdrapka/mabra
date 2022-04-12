@@ -1,4 +1,4 @@
-import EventListener from "../models/EventListener";
+import { EventListener } from "../models/EventListener";
 import { Guild, GuildMember, Message, User } from "discord.js";
 import { findOrCreateMember, findOrCreateUser } from "../db/findOrCreate";
 import CustomClient from "../models/CustomClient";
@@ -24,7 +24,7 @@ const messageCreate: EventListener = {
 	name: "messageCreate",
 	once: false,
 	async callback(message: Message) {
-		const { author, guild, member } = message;
+		const { author, guild, member, channel } = message;
 		const client = message.client as CustomClient;
 
 		if (!guild || !member || author.bot || message.system) return;
@@ -76,6 +76,8 @@ const messageCreate: EventListener = {
 				where: { guildId_userId: { guildId: guild.id, userId: author.id } },
 				data: { level: calculatedLevel },
 			});
+
+			client.emit("levelUp", member, channel, currentLevel, calculatedLevel);
 		}
 	},
 };
