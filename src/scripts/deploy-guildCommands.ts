@@ -27,7 +27,7 @@ for (const file of commandFiles) {
 }
 
 rest
-	.put(Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID), {
+	.put(Routes.applicationGuildCommands(config.CLIENT_ID, "config.GUILD_ID"), {
 		body: commands,
 	})
 	.then(() => console.log("Successfully registered application commands."))

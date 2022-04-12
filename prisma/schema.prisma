@@ -13,19 +13,24 @@ model Guild {
   createdAt DateTime  @map("created_at") @db.Timestamp()
   ownerId   String    @map("owner_id")
   Message   Message[]
+  Member    Member[]
 }
 
 model User {
   id        String    @id
   createdAt DateTime  @map("created_at") @db.Timestamp()
   Message   Message[]
+  Member    Member[]
 }
 
 model Member {
-  guildId      String @map("guild_id")
-  userId       String @map("user_id")
-  level        Int    @default(0)
-  messageCount Int    @default(0) @map("msg_count")
+  guildId      String    @map("guild_id")
+  userId       String    @map("user_id")
+  level        Int       @default(0)
+  messageCount Int       @default(0) @map("msg_count")
+  Guild        Guild     @relation(fields: [guildId], references: [id])
+  User         User      @relation(fields: [userId], references: [id])
+  Message      Message[]
 
   @@id([guildId, userId])
   @@index([level], map: "member_level_index")
@@ -39,4 +44,5 @@ model Message {
   createdAt DateTime @map("created_at") @db.Timestamp()
   Guild     Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   User      User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  Member    Member   @relation(fields: [guildId, authorId], references: [guildId, userId], onDelete: Cascade, onUpdate: Cascade)
 }

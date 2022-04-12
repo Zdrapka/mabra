@@ -7,7 +7,8 @@
 		"build": "tsc",
 		"start": "node build/index.js",
 		"dev": "concurrently \"tsc -w\" \"nodemon build/index.js\"",
-		"deploy:commands": "tsc && node build/scripts/deploy-commands.js",
+		"deploy:commands": "tsc && node build/scripts/deploy-guildCommands.js",
+		"deploy:gCommands": "tsc && node build/scripts/deploy-globalCommands.js",
 		"prisma:studio": "prisma studio",
 		"prisma:gen": "prisma generate"
 	},

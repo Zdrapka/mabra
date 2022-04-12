@@ -33,7 +33,7 @@ export const findOrCreateMember = async (
 	prisma: PrismaClient,
 	member: GuildMember
 ) => {
-	// Make sure a user exists, to keep database integrity
+	// Make sure a user exists, to maintain database integrity
 	await findOrCreateUser(prisma, member.user);
 
 	const { guild, id: userId } = member;

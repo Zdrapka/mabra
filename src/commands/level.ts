@@ -33,7 +33,7 @@ const level: SlashCommand = {
 			.setThumbnail(member.user.displayAvatarURL() || "")
 			.addField("Level", level.toString(), true)
 			.addField("Total Messages", messageCount.toString(), true)
-			.addField("Messages until next level", toNextLevel.toString(), true)
+			.addField("Messages until next level", toNextLevel.toString())
 			.setTimestamp(new Date());
 
 		await interaction.reply({ embeds: [emb] });

@@ -1,8 +1,8 @@
-import { EventListener } from "../models/EventListener";
-import { Guild, GuildMember, Message, User } from "discord.js";
-import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
-import CustomClient from "../models/CustomClient";
 import { PrismaClient } from "@prisma/client";
+import { GuildMember, Message } from "discord.js";
+import CustomClient from "../models/CustomClient";
+import { EventListener } from "../models/EventListener";
+import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
 import { calcLevel } from "../utils/levels";
 
 const incrementMessageCount = async (
@@ -45,17 +45,17 @@ const messageCreate: EventListener = {
 			: Infinity;
 
 		const COOLDOWN = 30;
-		if (timeDelta < COOLDOWN) {
-			await client.prisma.message.create({
-				data: {
-					id: message.id,
-					authorId: author.id,
-					guildId: guild.id,
-					channelId: message.channelId,
-					createdAt: message.createdAt,
-				},
-			});
-		}
+		if (timeDelta < COOLDOWN) return;
+
+		await client.prisma.message.create({
+			data: {
+				id: message.id,
+				authorId: author.id,
+				guildId: guild.id,
+				channelId: message.channelId,
+				createdAt: message.createdAt,
+			},
+		});
 
 		await incrementMessageCount(client.prisma, member);
 		queriedMember = await findOrCreateMember(client.prisma, member);
