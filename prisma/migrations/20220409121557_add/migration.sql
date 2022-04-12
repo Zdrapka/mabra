@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Member" ALTER COLUMN "level" SET DEFAULT 0,
+ALTER COLUMN "msg_count" SET DEFAULT 0;

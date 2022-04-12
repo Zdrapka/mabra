@@ -51,5 +51,3 @@ for (const file of eventFiles) {
 		client.on(event.name, (...args) => event.callback(...args));
 	}
 }
-
-client.login(config.DISCORD_TOKEN);

@@ -1,3 +1,4 @@
+import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
 import { Routes } from "discord-api-types/v9";
 import fs from "fs";
@@ -22,7 +23,7 @@ const commandFiles = relativeReadDir("../commands");
 
 for (const file of commandFiles) {
 	const command = require(`../commands/${file}`).default as SlashCommand;
-	commands.push(command.data.toJSON());
+	commands.push((command.data as SlashCommandBuilder).toJSON());
 }
 
 rest

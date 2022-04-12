@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Guild {
+  id        String    @id
+  name      String    @db.VarChar(255)
+  createdAt DateTime  @map("created_at") @db.Timestamp()
+  ownerId   String    @map("owner_id")
+  Message   Message[]
+}
+
+model User {
+  id        String    @id
+  createdAt DateTime  @map("created_at") @db.Timestamp()
+  Message   Message[]
+}
+
+model Member {
+  guildId      String @map("guild_id")
+  userId       String @map("user_id")
+  level        Int    @default(0)
+  messageCount Int    @default(0) @map("msg_count")
+
+  @@id([guildId, userId])
+  @@index([level], map: "member_level_index")
+}
+
+model Message {
+  id        String   @id
+  authorId  String   @map("user_id")
+  guildId   String   @map("guild_id")
+  channelId String   @map("channel_id")
+  createdAt DateTime @map("created_at") @db.Timestamp()
+  Guild     Guild    @relation(fields: [guildId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  User      User     @relation(fields: [authorId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
