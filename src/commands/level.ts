@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
-import { findOrCreateMember } from "../db/findOrCreate";
+import { findOrCreateMember, calcMessagesToNextLevel } from "../utils";
 import CustomClient from "../models/CustomClient";
 import SlashCommand from "../models/SlashCommand";
 
@@ -27,12 +27,13 @@ const level: SlashCommand = {
 		}
 
 		const { level, messageCount } = await findOrCreateMember(prisma, member);
-
+		const toNextLevel = await calcMessagesToNextLevel(messageCount);
 		const emb = new MessageEmbed()
 			.setTitle(`${member.user.username}'s level`)
 			.setThumbnail(member.user.displayAvatarURL() || "")
 			.addField("Level", level.toString(), true)
 			.addField("Total Messages", messageCount.toString(), true)
+			.addField("Messages until next level", toNextLevel.toString(), true)
 			.setTimestamp(new Date());
 
 		await interaction.reply({ embeds: [emb] });

@@ -1,11 +1,9 @@
 import { EventListener } from "../models/EventListener";
 import { Guild, GuildMember, Message, User } from "discord.js";
-import { findOrCreateMember, findOrCreateUser } from "../db/findOrCreate";
+import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
 import CustomClient from "../models/CustomClient";
 import { PrismaClient } from "@prisma/client";
-
-const FILTER_STRING = "!!";
-const COOLDOWN = 10;
+import { calcLevel } from "../utils/levels";
 
 const incrementMessageCount = async (
 	prisma: PrismaClient,
@@ -17,8 +15,6 @@ const incrementMessageCount = async (
 		data: { messageCount: { increment: amount } },
 	});
 };
-
-const calculateLevel = (n: number) => Math.floor(Math.cbrt(n));
 
 const messageCreate: EventListener = {
 	name: "messageCreate",
@@ -40,20 +36,16 @@ const messageCreate: EventListener = {
 		*/
 
 		const lastMessage = await client.prisma.message.findFirst({
-			where: {
-				authorId: author.id,
-				guildId: guild.id,
-			},
+			where: { authorId: author.id, guildId: guild.id },
 			orderBy: { createdAt: "desc" },
 		});
-
-		if (!message.content.startsWith(FILTER_STRING)) return;
 
 		const timeDelta = lastMessage
 			? (message.createdAt.getTime() - lastMessage.createdAt.getTime()) / 1000
 			: Infinity;
 
-		if (timeDelta < COOLDOWN)
+		const COOLDOWN = 30;
+		if (timeDelta < COOLDOWN) {
 			await client.prisma.message.create({
 				data: {
 					id: message.id,
@@ -63,13 +55,13 @@ const messageCreate: EventListener = {
 					createdAt: message.createdAt,
 				},
 			});
+		}
 
 		await incrementMessageCount(client.prisma, member);
-
 		queriedMember = await findOrCreateMember(client.prisma, member);
 
 		const currentLevel = queriedMember.level;
-		const calculatedLevel = calculateLevel(queriedMember.messageCount);
+		const calculatedLevel = calcLevel(queriedMember.messageCount);
 
 		if (currentLevel < calculatedLevel) {
 			await client.prisma.member.update({

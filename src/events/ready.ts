@@ -1,6 +1,6 @@
 import { EventListener } from "../models/EventListener";
 import CustomClient from "../models/CustomClient";
-import { findOrCreateGuild } from "../db/findOrCreate";
+import { findOrCreateGuild } from "../utils/findOrCreate";
 
 const ready: EventListener = {
 	name: "ready",
