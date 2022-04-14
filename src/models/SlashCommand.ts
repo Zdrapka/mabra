@@ -1,14 +1,21 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
+import {
+	SlashCommandBuilder,
+	SlashCommandSubcommandBuilder,
+	SlashCommandSubcommandGroupBuilder,
+	SlashCommandSubcommandsOnlyBuilder,
+} from "@discordjs/builders";
 import { CommandInteraction } from "discord.js";
 
-type SlashCommand =
-	| {
-			data: Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
-			callback(interaction: CommandInteraction): Promise<void>;
-	  }
-	| {
-			data: SlashCommandBuilder;
-			callback(interaction: CommandInteraction): Promise<void>;
-	  };
+type NoSubcommands = Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">;
 
-export default SlashCommand;
+type ValidSlashCommand =
+	| NoSubcommands
+	| SlashCommandBuilder
+	| SlashCommandSubcommandBuilder
+	| SlashCommandSubcommandGroupBuilder
+	| SlashCommandSubcommandsOnlyBuilder;
+
+export default interface SlashCommand {
+	data: ValidSlashCommand;
+	callback(interaction: CommandInteraction): Promise<void>;
+}
