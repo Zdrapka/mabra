@@ -1,25 +1,14 @@
-import fs from "fs";
-import path from "path";
 import ButtonSlashCommand from "./models/ButtonSlashCommand";
 import CustomClient from "./models/CustomClient";
 import { EventListener } from "./models/EventListener";
 import SlashCommand from "./models/SlashCommand";
+import { relativeReadDir } from "./utils";
 
 export const client = new CustomClient({
 	intents: ["GUILDS", "GUILD_MEMBERS", "GUILD_MESSAGES"],
 });
 
-const relativeReadDir = (dir: string): string[] => {
-	dir = path.resolve(__dirname, dir);
-	return fs.readdirSync(dir).filter(
-		(filename) =>
-			filename.endsWith(".js") &&
-			filename !== "index.js" &&
-			fs.readFileSync(`${dir}/${filename}`).length !== 0 // file isn't empty
-	);
-};
-
-relativeReadDir("./commands").forEach((file) => {
+relativeReadDir(__dirname, "./commands").forEach((file) => {
 	const command = require(`./commands/${file}`).default as SlashCommand;
 
 	const commandName = command.data.name;
@@ -38,7 +27,7 @@ relativeReadDir("./commands").forEach((file) => {
 	}
 });
 
-relativeReadDir("./events").forEach((file) => {
+relativeReadDir(__dirname, "./events").forEach((file) => {
 	const event = require(`./events/${file}`).default as EventListener;
 	if (event.once) {
 		client.once(event.name, (...args) => event.callback(...args));

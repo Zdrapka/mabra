@@ -1,5 +1,4 @@
-export const calcLevel = (messageCount: number) =>
-	Math.floor(Math.cbrt(messageCount));
+export const calcLevel = (messageCount: number) => Math.floor(Math.cbrt(messageCount));
 
 /** Returns the min amount of messages a user has sent to get their current level */
 export const calcMessages = (level: number) => Math.pow(level, 3);
