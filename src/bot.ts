@@ -19,34 +19,30 @@ const relativeReadDir = (dir: string): string[] => {
 	);
 };
 
-const commandFiles = relativeReadDir("./commands");
-for (const file of commandFiles) {
+relativeReadDir("./commands").forEach((file) => {
 	const command = require(`./commands/${file}`).default as SlashCommand;
 
 	const commandName = command.data.name;
 	client.commands.set(commandName, command);
 
-	const isButtonSlashCommand = (object: any): object is SlashCommand => {
-		return "buttons" in object;
-	};
+	const isButtonSlashCommand = (object: any): object is SlashCommand => "buttons" in object;
 
-	if (isButtonSlashCommand(command)) {
-		const btnCommand = command as ButtonSlashCommand;
-		for (const button of btnCommand.buttons) {
-			if (!button.customId) {
-				throw new Error(`Button from \`${commandName}\` must have customID`);
-			}
-			client.buttons.set(button.customId, commandName);
+	if (!isButtonSlashCommand(command)) return;
+
+	const btnCommand = command as ButtonSlashCommand;
+	for (const button of btnCommand.buttons) {
+		if (!button.customId) {
+			throw new Error(`Button from \`${commandName}\` must have customID`);
 		}
+		client.buttons.set(button.customId, commandName);
 	}
-}
+});
 
-const eventFiles = relativeReadDir("./events");
-for (const file of eventFiles) {
+relativeReadDir("./events").forEach((file) => {
 	const event = require(`./events/${file}`).default as EventListener;
 	if (event.once) {
 		client.once(event.name, (...args) => event.callback(...args));
 	} else {
 		client.on(event.name, (...args) => event.callback(...args));
 	}
-}
+});

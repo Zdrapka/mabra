@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
+import { RESTPostAPIApplicationCommandsJSONBody, Routes } from "discord-api-types/v9";
 import fs from "fs";
 import path from "path";
 import config from "../config";
@@ -18,17 +18,14 @@ const relativeReadDir = (dir: string): string[] => {
 	);
 };
 
-const commands = [];
+const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
 const commandFiles = relativeReadDir("../commands");
 
-for (const file of commandFiles) {
+commandFiles.forEach((file) => {
 	const command = require(`../commands/${file}`).default as SlashCommand;
 	commands.push((command.data as SlashCommandBuilder).toJSON());
-}
+});
 
-rest
-	.put(Routes.applicationCommands(config.CLIENT_ID), {
-		body: commands,
-	})
+rest.put(Routes.applicationCommands(config.CLIENT_ID), { body: commands })
 	.then(() => console.log("Successfully registered application commands."))
 	.catch(console.error);
