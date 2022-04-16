@@ -1,6 +1,6 @@
 import ButtonSlashCommand from "./models/ButtonSlashCommand";
 import CustomClient from "./models/CustomClient";
-import { EventListener } from "./models/EventListener";
+import EventListener from "./models/EventListener";
 import SlashCommand from "./models/SlashCommand";
 import { relativeReadDir } from "./utils";
 

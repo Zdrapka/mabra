@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { GuildMember, Message } from "discord.js";
 import CustomClient from "../models/CustomClient";
-import { EventListener } from "../models/EventListener";
+import EventListener from "../models/EventListener";
 import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
 import { calcLevel } from "../utils/levels";
 

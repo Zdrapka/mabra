@@ -1,5 +1,5 @@
 import { GuildMember, TextChannel } from "discord.js";
-import { EventListener } from "../models/EventListener";
+import EventListener from "../models/EventListener";
 
 const levelUp: EventListener = {
 	name: "levelUp",
