@@ -2,11 +2,15 @@ import { PrismaClient } from "@prisma/client";
 import CustomClientEvents from "./CustomClientEvents";
 import { Awaitable, Client, ClientOptions, Collection } from "discord.js";
 import SlashCommand from "./SlashCommand";
+import config from "../config";
 
 export default class CustomClient extends Client {
 	public constructor(options: ClientOptions) {
 		super(options);
 	}
+
+	/** Our environment variables */
+	public config: typeof config = config;
 
 	/** A Collection that maps `Button#customId` to `SlashCommand#name`*/
 	public buttons: Collection<string, string> = new Collection();
