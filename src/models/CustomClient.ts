@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import CustomClientEvents from "./CustomClientEvents";
-import { Awaitable, Client, ClientEvents, ClientOptions, Collection } from "discord.js";
+import { Awaitable, Client, ClientOptions, Collection } from "discord.js";
 import SlashCommand from "./SlashCommand";
 
 export default class CustomClient extends Client {

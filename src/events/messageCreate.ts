@@ -5,11 +5,7 @@ import { EventListener } from "../models/EventListener";
 import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
 import { calcLevel } from "../utils/levels";
 
-const incrementMessageCount = async (
-	prisma: PrismaClient,
-	member: GuildMember,
-	amount = 1
-) => {
+const incrementMessageCount = async (prisma: PrismaClient, member: GuildMember, amount = 1) => {
 	await prisma.member.update({
 		where: { guildId_userId: { guildId: member.guild.id, userId: member.id } },
 		data: { messageCount: { increment: amount } },
@@ -25,7 +21,7 @@ const messageCreate: EventListener = {
 
 		if (!guild || !member || author.bot || message.system) return;
 
-		const queriedUser = await findOrCreateUser(client.prisma, author);
+		await findOrCreateUser(client.prisma, author);
 		let queriedMember = await findOrCreateMember(client.prisma, member);
 
 		/* TODO Blacklist checks

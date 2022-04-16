@@ -12,11 +12,10 @@ const commandFiles = relativeReadDir(__dirname, "../commands");
 
 commandFiles.forEach((file) => {
 	const command = require(`../commands/${file}`).default as SlashCommand;
+	if (!command) throw new Error(`${file} must default export a SlashCommand`);
 	commands.push((command.data as SlashCommandBuilder).toJSON());
 });
 
-rest.put(Routes.applicationGuildCommands(config.CLIENT_ID, "config.GUILD_ID"), {
-	body: commands,
-})
+rest.put(Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID), { body: commands })
 	.then(() => console.log("Successfully registered application commands."))
 	.catch(console.error);

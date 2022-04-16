@@ -1,0 +1,25 @@
+{
+	"root": true,
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"ignorePatterns": ["node_modules/", "build/"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended",
+		"plugin:@typescript-eslint/recommended"
+	],
+	"rules": {
+		// https://typescript-eslint.io/rules/
+		"brace-style": "off",
+		"@typescript-eslint/brace-style": ["error", "1tbs", { "allowSingleLine": true }],
+
+		"quotes": "off",
+		"@typescript-eslint/quotes": ["error", "double"],
+
+		"semi": "off",
+		"@typescript-eslint/semi": ["error", "always"],
+
+		"@typescript-eslint/ban-ts-comment": "off",
+		"@typescript-eslint/no-var-requires": "off"
+	}
+}

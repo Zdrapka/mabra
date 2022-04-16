@@ -13,9 +13,7 @@ const interactionCreate: EventListener = {
 		// SLASH COMMAND INTERACTION
 		if (interaction.isCommand()) {
 			const cmdInteraction = interaction as CommandInteraction;
-			const command = client.commands.get(
-				cmdInteraction.commandName
-			) as SlashCommand;
+			const command = client.commands.get(cmdInteraction.commandName) as SlashCommand;
 
 			if (!command) return;
 

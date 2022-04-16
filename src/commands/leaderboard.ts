@@ -1,13 +1,10 @@
 import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
-import { findOrCreateMember, calcMessagesToNextLevel } from "../utils";
+import { CommandInteraction, MessageEmbed } from "discord.js";
 import CustomClient from "../models/CustomClient";
 import SlashCommand from "../models/SlashCommand";
 
 const level: SlashCommand = {
-	data: new SlashCommandBuilder()
-		.setName("leaderboard")
-		.setDescription("View the leaderboard"),
+	data: new SlashCommandBuilder().setName("leaderboard").setDescription("View the leaderboard"),
 
 	async callback(interaction: CommandInteraction): Promise<void> {
 		const client = interaction.client as CustomClient;

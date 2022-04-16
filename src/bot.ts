@@ -14,6 +14,7 @@ relativeReadDir(__dirname, "./commands").forEach((file) => {
 	const commandName = command.data.name;
 	client.commands.set(commandName, command);
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const isButtonSlashCommand = (object: any): object is SlashCommand => "buttons" in object;
 
 	if (!isButtonSlashCommand(command)) return;
