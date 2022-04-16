@@ -2,9 +2,15 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Typecheck entire folder",
 			"type": "npm",
 			"script": "check-types",
 			"problemMatcher": ["$tsc"]
+		},
+		{
+			"label": "TSC Build",
+			"type": "npm",
+			"script": "build"
 		}
 	]
 }
