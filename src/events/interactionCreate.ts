@@ -8,6 +8,8 @@ const interactionCreate: EventListener = {
 	name: "interactionCreate",
 	once: false,
 	async callback(interaction: Interaction) {
+		if (!interaction.inGuild()) return;
+
 		const client = interaction.client as CustomClient;
 
 		// SLASH COMMAND INTERACTION
