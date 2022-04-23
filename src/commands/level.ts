@@ -1,24 +1,22 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, GuildMember, MessageEmbed } from "discord.js";
-import { findOrCreateMember, calcMessagesToNextLevel } from "../utils";
-import CustomClient from "../models/CustomClient";
+import { MessageEmbed } from "discord.js";
 import SlashCommand from "../models/SlashCommand";
+import { findOrCreateMember } from "../utils/findOrCreate";
+import { calcMessagesToNextLevel } from "../utils/levels";
 
 const level: SlashCommand = {
-	data: new SlashCommandBuilder()
-		.setName("level")
-		.setDescription("Get to know your level")
-		.addUserOption((option) =>
-			option.setName("member").setDescription("The member to get the level of")
-		),
-
-	async callback(interaction: CommandInteraction): Promise<void> {
-		const client = interaction.client as CustomClient;
+	name: "level",
+	description: "Get to know your level",
+	options: [
+		{
+			name: "member",
+			description: "The member to get the level of",
+			type: "USER",
+		},
+	],
+	callback: async ({ interaction, client, args }) => {
 		const { prisma } = client;
-		const member =
-			(interaction.options.getMember("member") as GuildMember) ||
-			(interaction.member as GuildMember);
 
+		const member = args.getMember("member") || interaction.member;
 		if (member.user.bot) {
 			return await interaction.reply({
 				content: "Bots don't have levels!",
@@ -27,10 +25,10 @@ const level: SlashCommand = {
 		}
 
 		const { level, messageCount } = await findOrCreateMember(prisma, member);
-		const toNextLevel = await calcMessagesToNextLevel(messageCount);
+		const toNextLevel = calcMessagesToNextLevel(messageCount);
 		const emb = new MessageEmbed()
 			.setTitle(`${member.user.username}'s level`)
-			.setThumbnail(member.user.displayAvatarURL() || "")
+			.setThumbnail(member.user.displayAvatarURL())
 			.addField("Level", level.toString(), true)
 			.addField("Total Messages", messageCount.toString(), true)
 			.addField("Messages until next level", toNextLevel.toString())

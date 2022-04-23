@@ -10,7 +10,7 @@
 			"name": "Start Bot",
 			"skipFiles": ["<node_internals>/**"],
 			"preLaunchTask": "TSC Build",
-			"program": "${workspaceFolder}/build/index.js"
+			"program": "${workspaceFolder}/dist/index.js"
 		}
 	]
 }

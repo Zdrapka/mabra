@@ -1,54 +1,53 @@
-import { ButtonInteraction, CommandInteraction, Interaction } from "discord.js";
-import ButtonSlashCommand from "../models/ButtonSlashCommand";
+import { CommandInteractionOptionResolver } from "discord.js";
 import CustomClient from "../models/CustomClient";
 import EventListener from "../models/EventListener";
-import SlashCommand from "../models/SlashCommand";
 
-const interactionCreate: EventListener = {
+const interactionCreate: EventListener<"interactionCreate"> = {
 	name: "interactionCreate",
-	once: false,
-	async callback(interaction: Interaction) {
-		if (!interaction.inGuild()) return;
-
+	async callback(interaction) {
+		if (!interaction.inCachedGuild()) return;
 		const client = interaction.client as CustomClient;
 
-		// SLASH COMMAND INTERACTION
+		/* SLASH COMMAND */
 		if (interaction.isCommand()) {
-			const cmdInteraction = interaction as CommandInteraction;
-			const command = client.commands.get(cmdInteraction.commandName) as SlashCommand;
-
+			const command = client.commands.get(interaction.commandName);
 			if (!command) return;
 
 			try {
-				await command.callback(cmdInteraction);
+				await command.callback({
+					client,
+					interaction,
+					args: interaction.options as CommandInteractionOptionResolver,
+				});
 			} catch (error) {
 				console.error(error);
-				await cmdInteraction.reply({
+				await interaction.reply({
 					content: "There was an error while executing this command!",
 					ephemeral: true,
 				});
 			}
 		}
 
-		// BUTTON INTERACTION
+		/* BUTTON */
 		if (interaction.isButton()) {
-			const btnInteraction = interaction as ButtonInteraction;
-			const commandName = client.buttons.get(btnInteraction.customId);
-
+			const commandName = client.buttons.get(interaction.customId);
 			if (!commandName) {
-				return await btnInteraction.reply({
+				return await interaction.reply({
 					content: "There is no code for this button!",
 					ephemeral: true,
 				});
 			}
-
-			const command = client.commands.get(commandName) as ButtonSlashCommand;
-
+			const command = client.buttonCommands.get(commandName);
+			if (!command) return;
 			try {
-				await command.buttonCallback(btnInteraction);
+				await command.buttonCallback({
+					client,
+					interaction,
+					buttonCustomId: interaction.customId,
+				});
 			} catch (error) {
 				console.error(error);
-				await btnInteraction.reply({
+				await interaction.reply({
 					content: "There was an error while executing this command!",
 					ephemeral: true,
 				});

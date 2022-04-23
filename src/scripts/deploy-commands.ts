@@ -1,21 +1,30 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
 import { REST } from "@discordjs/rest";
-import { RESTPostAPIApplicationCommandsJSONBody, Routes } from "discord-api-types/v9";
-import config from "../config";
+import { Routes } from "discord-api-types/v9";
+import dotenv from "dotenv";
+import glob from "glob";
+import { promisify } from "util";
+import ButtonSlashCommand from "../models/ButtonSlashCommand";
 import SlashCommand from "../models/SlashCommand";
-import { relativeReadDir } from "../utils/";
 
-const rest = new REST({ version: "9" }).setToken(config.DISCORD_TOKEN);
+dotenv.config();
+const globPromise = promisify(glob);
 
-const commands: RESTPostAPIApplicationCommandsJSONBody[] = [];
-const commandFiles = relativeReadDir(__dirname, "../commands");
+async function main() {
+	const commands: (SlashCommand | ButtonSlashCommand)[] = [];
+	const commandFiles = await globPromise(`${__dirname}/../commands/*{.js,.ts}`);
+	commandFiles.forEach(async (filePath) => {
+		const command: SlashCommand | ButtonSlashCommand | null = (await import(filePath)).default;
+		if (!command) throw new Error(`Command ${filePath} does not have default export`);
 
-commandFiles.forEach((file) => {
-	const command = require(`../commands/${file}`).default as SlashCommand;
-	if (!command) throw new Error(`${file} must default export a SlashCommand`);
-	commands.push((command.data as SlashCommandBuilder).toJSON());
-});
+		commands.push(command);
+	});
 
-rest.put(Routes.applicationGuildCommands(config.CLIENT_ID, config.GUILD_ID), { body: commands })
-	.then(() => console.log("Successfully registered application commands."))
-	.catch(console.error);
+	const { BOT_TOKEN, CLIENT_ID, GUILD_ID } = process.env;
+
+	const rest = new REST({ version: "9" }).setToken(BOT_TOKEN);
+	await rest.put(Routes.applicationGuildCommands(CLIENT_ID, GUILD_ID), { body: commands });
+}
+
+main()
+	.then(() => console.log("Successfully deployed Slash Commands"))
+	.catch((e) => console.error(e));

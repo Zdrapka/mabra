@@ -1,5 +1,7 @@
-import { ClientEvents, GuildMember, TextChannel } from "discord.js";
+import { ClientEvents, GuildMember, GuildTextBasedChannel } from "discord.js";
+import CustomClient from "./CustomClient";
 
-export default interface CustomClientEvents extends ClientEvents {
-	levelUp: [member: GuildMember, channel: TextChannel, oldLevel: number, newLevel: number];
+export default interface CustomClientEvents extends Omit<ClientEvents, "ready"> {
+	ready: [client: CustomClient];
+	levelUp: [member: GuildMember, channel: GuildTextBasedChannel, level: number];
 }

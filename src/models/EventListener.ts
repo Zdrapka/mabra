@@ -1,8 +1,7 @@
 import CustomClientEvents from "./CustomClientEvents";
 
-export default interface EventListener {
-	name: keyof CustomClientEvents;
-	once: boolean;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	callback: (...args: any) => Promise<void> | void;
+export default interface EventListener<Key extends keyof CustomClientEvents> {
+	name: Key;
+	once?: boolean;
+	callback: (...args: CustomClientEvents[Key]) => Promise<void> | void;
 }

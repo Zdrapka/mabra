@@ -1,9 +1,13 @@
-import { client } from "./bot";
-import config from "./config";
+import dotenv from "dotenv";
+import CustomClient from "./models/CustomClient";
 
-const main = async () => {
-	client.login(config.DISCORD_TOKEN);
-};
+dotenv.config();
+
+export const client = new CustomClient({ intents: ["GUILDS", "GUILD_MESSAGES", "GUILD_MEMBERS"] });
+
+async function main() {
+	client.start();
+}
 
 main()
 	.catch((e) => {

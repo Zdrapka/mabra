@@ -1,13 +1,10 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { CommandInteraction, MessageEmbed } from "discord.js";
-import CustomClient from "../models/CustomClient";
+import { MessageEmbed } from "discord.js";
 import SlashCommand from "../models/SlashCommand";
 
-const level: SlashCommand = {
-	data: new SlashCommandBuilder().setName("leaderboard").setDescription("View the leaderboard"),
-
-	async callback(interaction: CommandInteraction): Promise<void> {
-		const client = interaction.client as CustomClient;
+const leaderboard: SlashCommand = {
+	name: "leaderboard",
+	description: "View the leaderboard",
+	callback: async ({ interaction, client }) => {
 		const { prisma } = client;
 		const { guild } = interaction;
 
@@ -36,4 +33,4 @@ const level: SlashCommand = {
 	},
 };
 
-export default level;
+export default leaderboard;

@@ -1,14 +1,12 @@
 import EventListener from "../models/EventListener";
-import CustomClient from "../models/CustomClient";
 import { findOrCreateGuild } from "../utils/findOrCreate";
 
-const ready: EventListener = {
+const ready: EventListener<"ready"> = {
 	name: "ready",
 	once: true,
-	async callback(client: CustomClient) {
+	callback(client) {
 		client.guilds.cache.forEach(async (guild) => await findOrCreateGuild(client.prisma, guild));
-
-		console.log(`Logged in as ${client.user?.tag} (${new Date()})`);
+		console.log(`Logged in as ${client.user?.tag} ${new Date().toISOString()}`);
 	},
 };
 

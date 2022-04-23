@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { GuildMember, Message } from "discord.js";
+import { GuildMember, GuildTextBasedChannel, Message } from "discord.js";
 import CustomClient from "../models/CustomClient";
 import EventListener from "../models/EventListener";
 import { findOrCreateMember, findOrCreateUser } from "../utils/findOrCreate";
@@ -12,14 +12,13 @@ const incrementMessageCount = async (prisma: PrismaClient, member: GuildMember, 
 	});
 };
 
-const messageCreate: EventListener = {
+const messageCreate: EventListener<"messageCreate"> = {
 	name: "messageCreate",
-	once: false,
 	async callback(message: Message) {
 		const { author, guild, member, channel } = message;
 		const client = message.client as CustomClient;
 
-		if (!guild || !member || author.bot || message.system) return;
+		if (!guild || !member || author.bot || message.system || !channel.isText()) return;
 
 		await findOrCreateUser(client.prisma, author);
 		let queriedMember = await findOrCreateMember(client.prisma, member);
@@ -65,7 +64,7 @@ const messageCreate: EventListener = {
 				data: { level: calculatedLevel },
 			});
 
-			client.emit("levelUp", member, channel, currentLevel, calculatedLevel);
+			client.emit("levelUp", member, channel as GuildTextBasedChannel, calculatedLevel);
 		}
 	},
 };
